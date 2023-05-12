@@ -39,7 +39,8 @@ dependencies:
   flutter_local_notifications: ^9.1.0
   flutter_native_timezone: ^2.0.0
   google_fonts: ^4.0.4
-  intl: ^0.18.1
+  intl: ^0.17.0
+  date_picker_timeline: ^1.2.3
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +64,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - images
+  # assets:
+  #   - images
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
