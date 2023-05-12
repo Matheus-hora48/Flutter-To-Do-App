@@ -42,6 +42,7 @@ class CustomInputs extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextFormField(
+                    readOnly: widget == null ? false : true,
                     autofocus: false,
                     controller: controller,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -66,6 +67,11 @@ class CustomInputs extends StatelessWidget {
                     ),
                   ),
                 ),
+                widget == null
+                    ? Container()
+                    : Container(
+                        child: widget,
+                      )
               ],
             ),
           )

@@ -97,9 +97,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           ElevatedButton(
-            onPressed: () => Get.to(
-              const AddTaskPage(),
-            ),
+            onPressed: () => Get.to(const AddTaskPage(), routeName: '/addtask'),
             child: const Text('+ Adicionar Task'),
           )
         ],
