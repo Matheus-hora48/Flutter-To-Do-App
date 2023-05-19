@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_app/src/pages/widget/buttons.dart';
 import 'package:to_do_app/src/pages/widget/custom_inputs.dart';
 import 'package:to_do_app/src/shared/theme/others_color.g.dart';
 
@@ -15,6 +16,8 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final titleEC = TextEditingController();
+  final noteEC = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   String _endTime = "9:30 AM";
   String _startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
@@ -35,7 +38,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     "Mensal",
   ];
 
-  int _selectedColor
+  int _selectedColor = 0;
 
   String getData(DateTime date) {
     initializeDateFormatting();
@@ -64,13 +67,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       fontSize: 24,
                     ),
               ),
-              const CustomInputs(
+              CustomInputs(
                 title: 'Título',
                 hint: "Entre com o título",
+                controller: titleEC,
               ),
-              const CustomInputs(
+              CustomInputs(
                 title: 'Observação',
                 hint: "Entre com as observações",
+                controller: noteEC,
               ),
               CustomInputs(
                 title: 'Date',
@@ -166,53 +171,90 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 height: 18,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Etiquetas',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Wrap(
-                        children: List<Widget>.generate(
-                          3,
-                          (int index) {
-                            return GestureDetector(
-                              onTap: (){
-
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    
-                                  },
-                                  child: CircleAvatar(
-                                    radius: 14,
-                                    backgroundColor: index == 0
-                                        ? OthersColors.bluishClr
-                                        : index == 1
-                                            ? OthersColors.pinkClr
-                                            : OthersColors.yellowClr,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    ],
+                  colorPallete(),
+                  ElevatedButton(
+                    onPressed: () {
+                      validateDate();
+                    },
+                    child: const Text('Criar tarefa '),
                   )
                 ],
-              )
+              ),
+              const SizedBox(
+                height: 40,
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  validateDate() {
+    if (titleEC.text.isNotEmpty && noteEC.text.isNotEmpty) {
+      Get.back();
+    } else if (titleEC.text.isEmpty || noteEC.text.isEmpty) {
+      Get.snackbar(
+        "Obrigatório",
+        'Todos os campos são obrigatorios',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        icon: const Icon(Icons.warning_amber_rounded),
+        margin: const EdgeInsets.all(16),
+      );
+    }
+  }
+
+  colorPallete() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Etiquetas',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Wrap(
+          children: List<Widget>.generate(
+            3,
+            (int index) {
+              return InkWell(
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedColor = index;
+                      });
+                    },
+                    child: CircleAvatar(
+                      radius: 14,
+                      backgroundColor: index == 0
+                          ? OthersColors.bluishClr
+                          : index == 1
+                              ? OthersColors.pinkClr
+                              : OthersColors.yellowClr,
+                      child: _selectedColor == index
+                          ? const Icon(
+                              Icons.done,
+                              color: Colors.white,
+                              size: 18,
+                            )
+                          : Container(),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
