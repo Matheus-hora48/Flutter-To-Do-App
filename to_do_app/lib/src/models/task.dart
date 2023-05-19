@@ -3,16 +3,16 @@ import 'dart:convert';
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 class Task {
-  final int? id;
-  final String? title;
-  final String? note;
-  final int? isCompleted;
-  final String? date;
-  final String? startTime;
-  final String? endTime;
-  final int? color;
-  final int? remind;
-  final String? repeat;
+  int? id;
+  String? title;
+  String? note;
+  int? isCompleted;
+  String? date;
+  String? startTime;
+  String? endTime;
+  int? color;
+  int? remind;
+  String? repeat;
   Task({
     this.id,
     this.title,
@@ -26,39 +26,31 @@ class Task {
     this.repeat,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'title': title,
-      'note': note,
-      'isCompleted': isCompleted,
-      'date': date,
-      'startTime': startTime,
-      'endTime': endTime,
-      'color': color,
-      'remind': remind,
-      'repeat': repeat,
-    };
+  Task.fromJson(Map<String, dynamic> json) {
+    id = json[id];
+    title = json[title];
+    note = json[note];
+    isCompleted = json[isCompleted];
+    date = json[date];
+    startTime = json[startTime];
+    endTime = json[endTime];
+    color = json[color];
+    remind = json[remind];
+    repeat = json[repeat];
   }
 
-  factory Task.fromMap(Map<String, dynamic> map) {
-    return Task(
-      id: map['id'] != null ? map['id'] as int : null,
-      title: map['title'] != null ? map['title'] as String : null,
-      note: map['note'] != null ? map['note'] as String : null,
-      isCompleted:
-          map['isCompleted'] != null ? map['isCompleted'] as int : null,
-      date: map['date'] != null ? map['date'] as String : null,
-      startTime: map['startTime'] != null ? map['startTime'] as String : null,
-      endTime: map['endTime'] != null ? map['endTime'] as String : null,
-      color: map['color'] != null ? map['color'] as int : null,
-      remind: map['remind'] != null ? map['remind'] as int : null,
-      repeat: map['repeat'] != null ? map['repeat'] as String : null,
-    );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['note'] = note;
+    data['isCompleted'] = isCompleted;
+    data['date'] = date;
+    data['startTime'] = startTime;
+    data['endTime'] = endTime;
+    data['color'] = color;
+    data['remind'] = remind;
+    data['repeat'] = repeat;
+    return data;
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Task.fromJson(String source) =>
-      Task.fromMap(json.decode(source) as Map<String, dynamic>);
 }

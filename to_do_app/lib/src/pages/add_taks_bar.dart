@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_app/src/controller/task_controller.dart';
+import 'package:to_do_app/src/models/task.dart';
 import 'package:to_do_app/src/pages/widget/buttons.dart';
 import 'package:to_do_app/src/pages/widget/custom_inputs.dart';
 import 'package:to_do_app/src/shared/theme/others_color.g.dart';
@@ -16,6 +18,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TaskController _taskController = Get.put(TaskController());
   final titleEC = TextEditingController();
   final noteEC = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -195,6 +198,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   validateDate() {
     if (titleEC.text.isNotEmpty && noteEC.text.isNotEmpty) {
+      _addTaskToDb();
       Get.back();
     } else if (titleEC.text.isEmpty || noteEC.text.isEmpty) {
       Get.snackbar(
@@ -206,6 +210,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
         margin: const EdgeInsets.all(16),
       );
     }
+  }
+
+  _addTaskToDb() async {
+    int value = await _taskController.addTask(
+      task: Task(
+        title: titleEC.text,
+        note: noteEC.text,
+        isCompleted: 0,
+        date: DateFormat.yMd().format(_selectedDate),
+        startTime: _startTime,
+        endTime: _endTime,
+        color: _selectedColor,
+        remind: _selectedRemind,
+        repeat: _selectedRepet,
+      ),
+    );
+    print(value);
   }
 
   colorPallete() {
