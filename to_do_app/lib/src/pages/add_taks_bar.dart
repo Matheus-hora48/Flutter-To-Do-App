@@ -35,6 +35,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
     "Mensal",
   ];
 
+  int _selectedColor
+
   String getData(DateTime date) {
     initializeDateFormatting();
     return DateFormat.yMd('pt_BR').format(date);
@@ -179,19 +181,24 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         children: List<Widget>.generate(
                           3,
                           (int index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: GestureDetector(
-                                onTap: (){
-                                  
-                                },
-                                child: CircleAvatar(
-                                  radius: 14,
-                                  backgroundColor: index == 0
-                                      ? OthersColors.bluishClr
-                                      : index == 1
-                                          ? OthersColors.pinkClr
-                                          : OthersColors.yellowClr,
+                            return GestureDetector(
+                              onTap: (){
+
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 14,
+                                    backgroundColor: index == 0
+                                        ? OthersColors.bluishClr
+                                        : index == 1
+                                            ? OthersColors.pinkClr
+                                            : OthersColors.yellowClr,
+                                  ),
                                 ),
                               ),
                             );
