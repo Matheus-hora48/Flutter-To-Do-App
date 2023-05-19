@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/src/pages/add_taks_bar.dart';
@@ -12,7 +16,7 @@ import 'package:to_do_app/src/shared/services/notification_services.dart';
 import 'package:to_do_app/src/shared/services/theme_services.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -21,16 +25,43 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var notifyHelper;
   DateTime _selectedDate = DateTime.now();
+  File? _userImage;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   notifyHelper.initializeNotification();
-  //   notifyHelper = NotifyHelper();
-  // }
+  final GetStorage _localStorage = GetStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserImage();
+  }
+
+  void _loadUserImage() {
+    final String imagePath = _localStorage.read('user_image') ?? '';
+    if (imagePath.isNotEmpty) {
+      setState(() {
+        _userImage = File(imagePath);
+      });
+    }
+  }
+
+  void _saveUserImage(String imagePath) {
+    _localStorage.write('user_image', imagePath);
+  }
+
   String getData(DateTime date) {
     initializeDateFormatting();
     return DateFormat.MMMMd('pt_BR').format(date);
+  }
+
+  Future<void> _selectImage() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _userImage = File(pickedImage.path);
+      });
+      _saveUserImage(pickedImage.path);
+    }
   }
 
   @override
@@ -47,31 +78,38 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  addDateBar() {
+  Widget addDateBar() {
     return Container(
       margin: const EdgeInsets.only(top: 20, left: 20),
-      child: DatePicker(DateTime.now(),
-          height: 100,
-          width: 80,
-          locale: 'pt_br',
-          initialSelectedDate: DateTime.now(),
-          selectionColor: Theme.of(context).colorScheme.primary,
-          dateTextStyle: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.w600, fontSize: 24),
-          dayTextStyle: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.w400, fontSize: 16),
-          monthTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w400, fontSize: 14), onDateChange: (date) {
-        _selectedDate = date;
-      }),
+      child: DatePicker(
+        DateTime.now(),
+        height: 100,
+        width: 80,
+        locale: 'pt_br',
+        initialSelectedDate: DateTime.now(),
+        selectionColor: Theme.of(context).colorScheme.primary,
+        dateTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 24,
+            ),
+        dayTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+        monthTextStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+            ),
+        onDateChange: (date) {
+          setState(() {
+            _selectedDate = date;
+          });
+        },
+      ),
     );
   }
 
-  addTaskBar() {
+  Widget addTaskBar() {
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
       child: Row(
@@ -105,7 +143,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  appBar() {
+  AppBar appBar() {
     return AppBar(
       leading: GestureDetector(
         onTap: () {
@@ -116,13 +154,16 @@ class _HomePageState extends State<HomePage> {
           size: 20,
         ),
       ),
-      actions: const [
-        CircleAvatar(
-          child: Icon(Icons.person),
-        ),
-        SizedBox(
-          width: 20,
-        )
+      actions: [
+        _userImage != null
+            ? CircleAvatar(
+                backgroundImage: FileImage(_userImage!),
+              )
+            : IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: _selectImage,
+              ),
+        const SizedBox(width: 20),
       ],
     );
   }
