@@ -242,7 +242,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
         Wrap(
           children: List<Widget>.generate(
-            3,
+            5,
             (int index) {
               return InkWell(
                 onTap: () {},
@@ -260,7 +260,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           ? OthersColors.bluishClr
                           : index == 1
                               ? OthersColors.pinkClr
-                              : OthersColors.yellowClr,
+                              : index == 2
+                                  ? OthersColors.yellowClr
+                                  : index == 3
+                                      ? OthersColors.greenClr
+                                      : OthersColors.purpleClr,
                       child: _selectedColor == index
                           ? const Icon(
                               Icons.done,
