@@ -33,7 +33,10 @@ class DbHelper {
   }
 
   static Future<int> insert(Task? task) async {
-    print('Função de inserir');
     return await _db?.insert(_tableName, task!.toJson()) ?? 1;
+  }
+
+  static Future query() async {
+    return await _db?.query(_tableName);
   }
 }

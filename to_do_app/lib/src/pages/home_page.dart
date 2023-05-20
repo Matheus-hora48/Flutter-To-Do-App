@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:to_do_app/src/controller/task_controller.dart';
 import 'package:to_do_app/src/pages/add_taks_bar.dart';
 import 'package:to_do_app/src/pages/widget/buttons.dart';
 import 'package:to_do_app/src/shared/services/notification_services.dart';
@@ -26,6 +27,8 @@ class _HomePageState extends State<HomePage> {
   var notifyHelper;
   DateTime _selectedDate = DateTime.now();
   File? _userImage;
+
+  final _taskController = Get.put(TaskController());
 
   final GetStorage _localStorage = GetStorage();
 
@@ -72,9 +75,31 @@ class _HomePageState extends State<HomePage> {
         children: [
           addTaskBar(),
           addDateBar(),
+          showTask(),
         ],
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
+    );
+  }
+
+  Widget showTask() {
+    return Expanded(
+      child: Obx(() {
+        return ListView.builder(
+          itemCount: _taskController.taskList.length,
+          itemBuilder: (_, index) {
+            return Container(
+              width: 100,
+              height: 50,
+              color: Colors.green,
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                _taskController.taskList[index].toString()
+              ),
+            );
+          },
+        );
+      }),
     );
   }
 
@@ -135,7 +160,13 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           ElevatedButton(
-            onPressed: () => Get.to(const AddTaskPage(), routeName: '/addtask'),
+            onPressed: () async {
+              await Get.to(
+                const AddTaskPage(),
+                routeName: '/addtask',
+              );
+              _taskController.getTasks();
+            },
             child: const Text('+ Adicionar Task'),
           )
         ],
