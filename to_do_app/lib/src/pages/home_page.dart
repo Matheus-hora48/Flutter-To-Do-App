@@ -2,20 +2,15 @@ import 'dart:io';
 
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/src/controller/task_controller.dart';
 import 'package:to_do_app/src/models/task.dart';
 import 'package:to_do_app/src/pages/add_taks_bar.dart';
-import 'package:to_do_app/src/pages/widget/buttons.dart';
-import 'package:to_do_app/src/shared/services/notification_services.dart';
 import 'package:to_do_app/src/shared/services/theme_services.dart';
 
 import 'widget/task_tile.dart';
