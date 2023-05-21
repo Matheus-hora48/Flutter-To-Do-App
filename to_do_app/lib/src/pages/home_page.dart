@@ -4,6 +4,7 @@ import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,10 +12,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/src/controller/task_controller.dart';
+import 'package:to_do_app/src/models/task.dart';
 import 'package:to_do_app/src/pages/add_taks_bar.dart';
 import 'package:to_do_app/src/pages/widget/buttons.dart';
 import 'package:to_do_app/src/shared/services/notification_services.dart';
 import 'package:to_do_app/src/shared/services/theme_services.dart';
+
+import 'widget/task_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -76,7 +80,7 @@ class _HomePageState extends State<HomePage> {
           addTaskBar(),
           addDateBar(),
           const SizedBox(
-             height: 10,
+            height: 10,
           ),
           showTask(),
         ],
@@ -91,18 +95,110 @@ class _HomePageState extends State<HomePage> {
         return ListView.builder(
           itemCount: _taskController.taskList.length,
           itemBuilder: (_, index) {
-            return Container(
-              width: 100,
-              height: 50,
-              color: Colors.green,
-              margin: const EdgeInsets.only(bottom: 10),
-              child: Text(
-                _taskController.taskList[index].toString()
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showBottomSheet(
+                              context, _taskController.taskList[index]);
+                        },
+                        child: TaskTile(
+                          _taskController.taskList[index],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             );
           },
         );
       }),
+    );
+  }
+
+  _showBottomSheet(BuildContext context, Task task) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.only(top: 4),
+        height: task.isCompleted == 1
+            ? MediaQuery.of(context).size.height * 0.24
+            : MediaQuery.of(context).size.height * 0.32,
+        color: Theme.of(context).colorScheme.background,
+        child: Column(
+          children: [
+            Container(
+              height: 6,
+              width: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+            const Spacer(),
+            task.isCompleted == 1
+                ? Container()
+                : _bottomSheetButton(
+                    label: 'Completar task',
+                    onTap: () {
+                      Get.back();
+                    },
+                    color: Theme.of(context).colorScheme.primary,
+                    context: context,
+                  ),
+            const SizedBox(
+              height: 20,
+            ),
+            _bottomSheetButton(
+              label: 'Deletar Task',
+              onTap: () {
+                Get.back();
+              },
+              color: Theme.of(context).colorScheme.errorContainer,
+              context: context,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _bottomSheetButton({
+    required String label,
+    required Function onTap,
+    required Color color,
+    required BuildContext context,
+    bool isClose = false,
+  }) {
+    return GestureDetector(
+      onTap: () => onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        height: 55,
+        width: MediaQuery.of(context).size.width * 0.9,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: isClose == true
+                ? Theme.of(context).colorScheme.errorContainer
+                : color,
+          ),
+          color: isClose == true
+              ? Theme.of(context).colorScheme.errorContainer
+              : color,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+      ),
     );
   }
 
