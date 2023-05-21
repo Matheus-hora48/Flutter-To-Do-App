@@ -75,6 +75,9 @@ class _HomePageState extends State<HomePage> {
         children: [
           addTaskBar(),
           addDateBar(),
+          const SizedBox(
+             height: 10,
+          ),
           showTask(),
         ],
       ),
