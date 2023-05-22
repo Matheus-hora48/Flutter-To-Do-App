@@ -150,6 +150,8 @@ class _HomePageState extends State<HomePage> {
             _bottomSheetButton(
               label: 'Deletar Task',
               onTap: () {
+                _taskController.delete(task);
+                _taskController.getTasks();
                 Get.back();
               },
               color: Theme.of(context).colorScheme.error,
@@ -178,13 +180,13 @@ class _HomePageState extends State<HomePage> {
 
   _bottomSheetButton({
     required String label,
-    required Function onTap,
+    required VoidCallback onTap,
     required Color color,
     required BuildContext context,
     bool isClose = false,
   }) {
     return GestureDetector(
-      onTap: () => onTap,
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         height: 55,
