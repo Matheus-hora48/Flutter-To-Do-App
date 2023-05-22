@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserImage();
+    _taskController.getTasks();
   }
 
   void _loadUserImage() {
@@ -146,16 +147,28 @@ class _HomePageState extends State<HomePage> {
                     color: Theme.of(context).colorScheme.primary,
                     context: context,
                   ),
-            const SizedBox(
-              height: 20,
-            ),
             _bottomSheetButton(
               label: 'Deletar Task',
               onTap: () {
                 Get.back();
               },
-              color: Theme.of(context).colorScheme.errorContainer,
+              color: Theme.of(context).colorScheme.error,
               context: context,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            _bottomSheetButton(
+              label: 'Fechar',
+              onTap: () {
+                Get.back();
+              },
+              isClose: true,
+              color: Theme.of(context).colorScheme.onError,
+              context: context,
+            ),
+            const SizedBox(
+              height: 10,
             ),
           ],
         ),
@@ -180,18 +193,19 @@ class _HomePageState extends State<HomePage> {
           border: Border.all(
             width: 2,
             color: isClose == true
-                ? Theme.of(context).colorScheme.errorContainer
+                ? Theme.of(context).colorScheme.secondary
                 : color,
           ),
-          color: isClose == true
-              ? Theme.of(context).colorScheme.errorContainer
-              : color,
+          color: isClose == true ? Colors.transparent : color,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: Text(
             label,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: isClose == false
+                    ? Theme.of(context).colorScheme.surface
+                    : Theme.of(context).colorScheme.onSurface),
           ),
         ),
       ),

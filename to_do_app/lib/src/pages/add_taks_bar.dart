@@ -213,7 +213,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   _addTaskToDb() async {
-    int value = await _taskController.addTask(
+    await _taskController.addTask(
       task: Task(
         title: titleEC.text,
         note: noteEC.text,
@@ -226,7 +226,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
         repeat: _selectedRepet,
       ),
     );
-    print(value);
   }
 
   colorPallete() {
