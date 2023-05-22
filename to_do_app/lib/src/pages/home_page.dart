@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -11,7 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:to_do_app/src/controller/task_controller.dart';
 import 'package:to_do_app/src/models/task.dart';
 import 'package:to_do_app/src/pages/add_taks_bar.dart';
-import 'package:to_do_app/src/pages/widget/buttons.dart';
+import 'package:to_do_app/src/shared/services/notification_services.dart';
 import 'package:to_do_app/src/shared/services/theme_services.dart';
 
 import 'widget/task_tile.dart';
@@ -24,7 +25,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var notifyHelper;
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   DateTime _selectedDate = DateTime.now();
   File? _userImage;
 
@@ -36,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserImage();
+    NotifyHelper.initialize(flutterLocalNotificationsPlugin);
     _taskController.getTasks();
   }
 
@@ -310,6 +313,11 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       leading: GestureDetector(
         onTap: () {
+          NotifyHelper.showBigTextNotification(
+            title: 'Tema mudou',
+            body: Get.isDarkMode ? "Tema claro ativado" : "Tema escuro ativado",
+            fln: flutterLocalNotificationsPlugin,
+          );
           ThemeServices().switchTheme();
         },
         child: const Icon(
