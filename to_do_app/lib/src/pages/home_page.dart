@@ -96,7 +96,15 @@ class _HomePageState extends State<HomePage> {
           itemCount: _taskController.taskList.length,
           itemBuilder: (_, index) {
             Task task = _taskController.taskList[index];
-            if (task.repeat == 'Daily') {
+            if (task.repeat == 'Diária') {
+              DateTime date = DateFormat.jm().parse(task.startTime.toString());
+              var myTime = DateFormat("HH:mm").format(date);
+              NotifyHelper.scheduledNotification(
+                int.parse(myTime.toString().split(':')[0]),
+                int.parse(myTime.toString().split(':')[1]),
+                task,
+                flutterLocalNotificationsPlugin,
+              );
               return AnimationConfiguration.staggeredList(
                 position: index,
                 child: SlideAnimation(
